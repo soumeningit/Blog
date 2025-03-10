@@ -56,6 +56,7 @@ exports.createCategory = async (req, res) => {
 
 exports.getCategories = async (req, res) => {
     try {
+        console.log("INSIDE GET CATEGORIES");
         const categories = await Category.find({});
         if (!categories) {
             return res.status(400).json({
@@ -63,6 +64,7 @@ exports.getCategories = async (req, res) => {
                 message: "Category not found"
             });
         }
+        console.log("Categories : ", categories);
         return res.status(200).json({
             success: true,
             categories

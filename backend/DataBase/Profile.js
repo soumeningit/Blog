@@ -35,6 +35,10 @@ const profileSchema = new mongoose.Schema({
     bio: {
         type: String
     },
+    gender: {
+        type: String,
+        enum: ["male", "female", "other"]
+    },
     socialMedia: {
         facebook: {
             type: String

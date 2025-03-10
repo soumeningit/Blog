@@ -3,10 +3,9 @@ import JoditEditor from "jodit-react";
 import { useSelector } from "react-redux";
 import { getCategories } from "../Service/API/CategoryAPI";
 import { getSubCategories } from "../Service/API/SubCategoryAPI";
-import { createBlogAPI } from "../Service/API/BlogAPI";
+import { createBlogAPI, thumbnailUploadAPI } from "../Service/API/BlogAPI";
 import { toast } from "react-hot-toast";
 import { IoCloudUploadOutline } from "react-icons/io5";
-import FileUpload from "./FileUpload";
 import { useNavigate } from "react-router-dom";
 
 function Editor({ placeholder }) {
@@ -14,17 +13,22 @@ function Editor({ placeholder }) {
   const { user } = useSelector((state) => state.auth);
   const editor = useRef(null);
   const navigate = useNavigate();
+  const [thumbnailUploadData, setThumbnailUploadData] = useState();
   const [contentDetails, setContentDetails] = useState({
     title: "",
     description: "",
     content: "",
     category: "",
     subCategory: [],
+    contentId: "",
   });
 
   const [error, setError] = useState(null);
   const [categories, setCategories] = useState([]);
   const [subCategories, setSubCategories] = useState([]);
+  const [file, setFile] = useState(null);
+
+  console.log("user" + user);
 
   async function fetchSubCategories(categoryId) {
     try {
@@ -69,7 +73,7 @@ function Editor({ placeholder }) {
       console.log("response : " + JSON.stringify(response));
       if (response.data.success) {
         toast.success("Blog created successfully");
-        navigate(`/dashboard/file-upload/${response.data.data._id}`);
+        // navigate(`/dashboard/file-upload/${response.data.data._id}`);
       }
     } catch (error) {
       toast.dismiss(toastId);
@@ -93,13 +97,31 @@ function Editor({ placeholder }) {
     fetchCategories();
   }, []);
 
-  // async function handleImageUpload() {
-  //   console.log("file : " + file);
-  //   if (!file) return;
-  //   const formData = new FormData();
-  //   formData.append("thumbnail", file);
-  //   formData.append("userId", user.userId);
-  // }
+  async function handleImageUpload() {
+    console.log("file : " + file);
+    if (!file) return;
+    const formData = new FormData();
+    formData.append("thumbnail", file);
+    formData.append("userId", user.userId);
+    formData.append("title", contentDetails.title);
+    formData.append("description", contentDetails.description);
+    formData.append("profile", user.additionalDetails);
+    try {
+      const response = await thumbnailUploadAPI(formData, token);
+      console.log("response : " + JSON.stringify(response));
+      if (response.data.success) {
+        setContentDetails({
+          ...contentDetails,
+          thumbnail: response.data.data.thumbnail,
+          contentId: response.data.data._id,
+        });
+        setThumbnailUploadData(response.data.data);
+        toast.success("Thumbnail uploaded successfully");
+      }
+    } catch (error) {
+      console.log("Error in handleImageUpload : ", error);
+    }
+  }
   return (
     <>
       <div className="max-w-3xl mx-auto p-6 rounded-lg shadow-md border bg-white">
@@ -113,11 +135,14 @@ function Editor({ placeholder }) {
           onChange={(e) =>
             setContentDetails({ ...contentDetails, title: e.target.value })
           }
+          value={contentDetails.title}
           placeholder="Enter a title..."
           required
           className="w-full p-2 border rounded-md mb-4"
         />
-
+        <label className="block text-sm font-medium text-gray-700 mb-2">
+          Description <span className="text-red-600 font-semibold">*</span>
+        </label>
         <textarea
           name="description"
           onChange={(e) =>
@@ -126,33 +151,36 @@ function Editor({ placeholder }) {
               description: e.target.value,
             })
           }
+          value={contentDetails.description}
           placeholder="Write a brief description (max 50 words)..."
           required
           className="w-full p-2 border rounded-md mb-4"
         />
         {error && <p className="text-red-600 text-sm">{error}</p>}
 
-        {/* <label className="block text-sm font-medium text-gray-700 mb-2">
-        Upload Thumbnail <span className="text-red-600 font-semibold">*</span>
-        <span className="text-sm text-red-500 ml-2">
-          Supported Format:.jpg,jpeg,.png
-        </span>
-      </label>
-      <div className="flex items-center gap-2 relative">
-        <input
-          type="file"
-          name="thumbnail"
-          accept="image/*"
-          onChange={(e) => setFile(e.target.files[0])}
-          required
-          className="w-full p-2 border rounded-md mb-4 pr-10" // Add padding-right to avoid text overlap
-        />
-        <IoCloudUploadOutline
-          className="absolute right-2 top-1/2 transform -translate-y-4 h-4"
-          onClick={handleImageUpload}
-        />
-      </div> */}
-
+        <label className="block text-sm font-medium text-gray-700 mb-2">
+          Upload Thumbnail <span className="text-red-600 font-semibold">*</span>
+          <span className="text-sm text-red-500 ml-2">
+            Supported Format:.jpg,jpeg,.png
+          </span>
+        </label>
+        <div className="flex items-center gap-2 relative">
+          <input
+            type="file"
+            name="thumbnail"
+            accept="image/*"
+            onChange={(e) => setFile(e.target.files[0])}
+            required
+            className="w-full p-2 border rounded-md mb-4 pr-10 cursor-pointer"
+          />
+          <IoCloudUploadOutline
+            className="absolute right-2 top-1/2 transform -translate-y-4 h-4 cursor-pointer"
+            onClick={handleImageUpload}
+          />
+        </div>
+        <label className="block text-sm font-medium text-gray-700 mb-2">
+          Select Category <span className="text-red-600 font-semibold">*</span>
+        </label>
         <select
           name="category"
           onChange={(e) => {
@@ -176,6 +204,10 @@ function Editor({ placeholder }) {
 
         {contentDetails.category && (
           <>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Select Sub category{" "}
+              <span className="text-red-600 font-semibold">*</span>
+            </label>
             <select
               onChange={(e) => {
                 const selectedSub = subCategories.find(
@@ -221,9 +253,12 @@ function Editor({ placeholder }) {
             placeholder: placeholder || "Start typing...",
             height: 300,
           }}
-          onChange={(value) =>
-            setContentDetails({ ...contentDetails, content: value })
-          }
+          onBlur={(prev) => {
+            setContentDetails({
+              ...contentDetails,
+              content: prev,
+            });
+          }}
           className="w-full border rounded-md bg-white text-sm"
         />
 

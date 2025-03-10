@@ -13,6 +13,8 @@ const contentSchema = new mongoose.Schema({
     },
     thumbnail: {
         type: String,
+        required: true,
+        trim: true,
     },
     userDetail: {
         type: mongoose.Schema.Types.ObjectId,
@@ -41,12 +43,10 @@ const contentSchema = new mongoose.Schema({
     ],
     category: {
         type: mongoose.Schema.Types.ObjectId,
-        required: true,
         ref: "Category",
     },
     subCategory: [{
         type: mongoose.Schema.Types.ObjectId,
-        required: true,
         ref: "SubCategory",
     }],
     bookmarkedBy: [{

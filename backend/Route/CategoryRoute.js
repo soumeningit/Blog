@@ -6,5 +6,6 @@ const { createCategory, getCategories } = require("../Controller/Category");
 
 router.post("/create-category", auth, isAdmin, createCategory);
 router.get("/get-categories", auth, isAuthor, getCategories);
+router.get("/all-categories", getCategories);
 
 module.exports = router;

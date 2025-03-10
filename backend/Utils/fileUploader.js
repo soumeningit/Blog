@@ -1,4 +1,6 @@
-exports.fileUploader = async (file, folder, height, quality) => {
+const cloudinary = require('cloudinary').v2
+
+exports.uploadFileToCloudinary = async (file, folder, height, quality) => {
     const options = { folder };
     if (height) {
         options.height = height;

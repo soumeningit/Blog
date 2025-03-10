@@ -9,6 +9,7 @@ const blogRoute = require('./Route/BlogRoute');
 const searchRoute = require('./Route/SearchRoute');
 const commentRoute = require('./Route/CommentRoute');
 const fileUpload = require('express-fileupload');
+const profileRoute = require('./Route/ProfileRoute');
 
 require('dotenv').config();
 
@@ -47,6 +48,7 @@ app.use('/api/sub-category', subCategoryRoute);
 app.use('/api/blog', blogRoute);
 app.use('/api/search', searchRoute);
 app.use('/api/comment', commentRoute);
+app.use('/api/profile', profileRoute);
 
 app.get('/', (req, res) => {
     res.send('Hello World');

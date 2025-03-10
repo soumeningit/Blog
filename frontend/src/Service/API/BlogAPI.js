@@ -10,7 +10,9 @@ const {
     REMOVE_LIKE_API,
     ADD_BOOKMARK_API,
     REMOVE_BOOKMARK_API,
-    THUMBNAIL_UPLOAD_API
+    THUMBNAIL_UPLOAD_API,
+    DELETE_BLOG_API,
+    GET_BLOGS_BY_CATEGORY_API
 } = blogendpoints;
 
 export const createBlogAPI = async (contentDetails, token) => {
@@ -124,3 +126,25 @@ export const thumbnailUploadAPI = async (data, token) => {
         console.log(error);
     }
 }
+
+export const deleteBlogAPI = async (data, token) => {
+    try {
+        const response = await axios.post(DELETE_BLOG_API, data, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+        return response;
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+export const getBlogsByCategoryAPI = async (id) => {
+    try {
+        const response = await axios.get(`${GET_BLOGS_BY_CATEGORY_API}?categoryId=${id}`);
+        return response;
+    } catch (error) {
+        console.log(error);
+    }
+}   

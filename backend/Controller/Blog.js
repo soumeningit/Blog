@@ -8,11 +8,12 @@ const { cloudinaryConnect } = require('../Config/clodinaryConfig');
 const sharp = require('sharp');
 const { uploadFileToCloudinary } = require('../Utils/fileUploader');
 
+
 exports.createBlog = async (req, res) => {
     try {
         console.log("INSIDE CREATE BLOG....");
         console.log("req.body : " + JSON.stringify(req.body));
-        const { title, description, content, category, subCategory } = req.body;
+        const { title, description, content, category, subCategory, contentId } = req.body;
         console.log("title, category, subCategory : " + title + " " + category + " " + JSON.stringify(subCategory) + typeof (subCategory));
 
         if (!title || !description || !content || !category) {
@@ -95,20 +96,22 @@ exports.createBlog = async (req, res) => {
         const subCategoryIds = subCategoryArray.map((item) => item.id);
         console.log("subCategoryIds : " + subCategoryIds);
 
-        const newContent = new Content({
-            title,
-            description,
-            content,
-            userDetail: userId,
-            profileDetails: profileId,
-            category,
-            subCategory: subCategoryIds
-        });
+        const newContent = await Content.findByIdAndUpdate(
+            { _id: contentId },
+            {
+                title,
+                description,
+                content,
+                userDetail: userId,
+                profileDetails: profileId,
+                category,
+                subCategory: subCategoryIds
+            },
+            { new: true }   // Return the updated document
+        );
+        console.log("newContent : " + JSON.stringify(newContent));
 
-        const contentData = await newContent.save();
-        console.log("contentData : " + JSON.stringify(contentData));
-
-        if (!contentData) {
+        if (!newContent) {
             return res.status(500).json({
                 success: false,
                 message: "Internal Server Error"
@@ -119,7 +122,7 @@ exports.createBlog = async (req, res) => {
         return res.status(200).json({
             success: true,
             message: "Blog Created Successfully",
-            data: contentData?._id
+            data: newContent
         });
     } catch (error) {
         console.log(error);
@@ -537,22 +540,23 @@ exports.thumbnailUpload = async (req, res) => {
     try {
         console.log("INSIDE THUMBNAIL UPLOAD....");
         console.log("req.body : " + JSON.stringify(req.body));
-        const { userId, blogId } = req.body;
-        if (!userId || !blogId) {
+        console.log("req.file : " + JSON.stringify(req.files));
+        const { userId, title, description, profile } = req.body;
+        if (!userId || !title || !description) {
             return res.status(400).json({
                 success: false,
                 message: "Please provide all the details"
             });
         }
-        const { thumbnail } = req.files;
-        console.log("thumbnail : " + JSON.stringify(thumbnail));
+        const file = req.files.thumbnail;
+        console.log("thumbnail : " + JSON.stringify(file));
         try {
             cloudinaryConnect();
         } catch (error) {
             console.log("Clodinary Connection failed");
         }
         // Upload file to clodinary
-        const file = await sharp(thumbnail[0].buffer).quality(20).toFormat('jpeg').toBuffer();
+        // const fileData = await sharp(thumbnail[0].buffer).quality(20).toFormat('jpeg').toBuffer();
         const cloudinaryData = await uploadFileToCloudinary(file, process.env.CLOUD_FOLDER_NAME, 200, 20);
         console.log("cloudinaryData : " + JSON.stringify(cloudinaryData));
         if (!cloudinaryData) {
@@ -561,10 +565,31 @@ exports.thumbnailUpload = async (req, res) => {
                 message: "Internal Server Error"
             });
         }
+
+        const content = new Content({
+            title,
+            description,
+            thumbnail: cloudinaryData.secure_url,
+            userDetail: userId,
+            profileDetails: profile,
+            content: "Image Uploaded"
+        });
+        console.log("content : " + JSON.stringify(content));
+        const contentData = await content.save();
+        console.log("contentData : " + JSON.stringify(contentData));
+        if (!contentData) {
+            return res.status(500).json({
+                success: false,
+                message: "Internal Server Error"
+            });
+        }
+
+        console.log("contentData : " + JSON.stringify(contentData));
+
         return res.status(200).json({
             success: true,
             message: "Thumbnail Uploaded Successfully",
-            data: cloudinaryData
+            data: contentData
         });
 
     } catch (error) {
@@ -575,3 +600,88 @@ exports.thumbnailUpload = async (req, res) => {
         });
     }
 }
+
+exports.deleteBlog = async (req, res) => {
+    try {
+        console.log("INSIDE DELETE BLOG....");
+        console.log("req.body : " + JSON.stringify(req.body));
+        const { blogId, userId } = req.body;
+        console.log("blogId, userId : " + blogId + " " + userId);
+        if (!blogId || !userId) {
+            return res.status(400).json({
+                success: false,
+                message: "Please provide all the details"
+            });
+        }
+        const isUser = await User.findById({ _id: userId });
+        if (!isUser) {
+            return res.status(400).json({
+                success: false,
+                message: "User not found"
+            });
+        }
+
+        const isBlog = await Content.findById({ _id: blogId });
+        if (!isBlog) {
+            return res.status(400).json({
+                success: false,
+                message: "Blog not found"
+            });
+        }
+        const isDelete = await Content.findByIdAndDelete({ _id: blogId });
+        if (!isDelete) {
+            return res.status(500).json({
+                success: false,
+                message: "Internal Server Error"
+            });
+        }
+        return res.status(200).json({
+            success: true,
+            message: "Blog Deleted Successfully"
+        });
+    } catch (error) {
+        console.log("Error in deleteBlog : ", error);
+        return res.status(500).json({
+            success: false,
+            message: "Internal Server Error"
+        });
+    }
+};
+
+exports.getGetBlogsByCategory = async (req, res) => {
+    try {
+        console.log("INSIDE GET BLOGS BY CATEGORY....");
+        const { categoryId } = req.query;
+        if (!categoryId) {
+            return res.status(400).json({
+                success: false,
+                message: "Please provide Category Id"
+            });
+        }
+        const isCategory = await Category.findById({ _id: categoryId });
+        if (!isCategory) {
+            return res.status(400).json({
+                success: false,
+                message: "Category not found"
+            });
+        }
+        const blogs = await Content.find({ category: categoryId });
+        if (!blogs) {
+            return res.status(404).json({
+                success: false,
+                message: "No Blogs Found"
+            });
+        }
+        return res.status(200).json({
+            success: true,
+            message: "Blogs Found",
+            data: blogs
+        });
+    } catch (error) {
+        console.log("Error in getGetBlogsByCategory : ", error);
+        return res.status(500).json({
+            success: false,
+            message: "Internal Server Error"
+        });
+    }
+};

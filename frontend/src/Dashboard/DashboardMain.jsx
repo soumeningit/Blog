@@ -10,10 +10,10 @@ function DashboardMain() {
   const [isSidebarOpen, setSidebarOpen] = useState(true);
 
   return (
-    <div className="flex h-screen bg-[#22395ad1] ">
+    <div className="flex min-h-screen bg-[#22395ad1] ">
       {/* Sidebar */}
       <div
-        className={`bg-slate-800 shadow-lg h-full transition-all duration-300 ${
+        className={`bg-slate-800 shadow-lg min-h-screen transition-all duration-300 ${
           isSidebarOpen ? "w-64 p-4" : "w-16 p-2"
         }`}
       >
@@ -52,7 +52,7 @@ function DashboardMain() {
       </div>
 
       {/* Main Content */}
-      <div className="flex-1 p-6">
+      <div className="flex-1 p-6 min-h-screen">
         <Outlet />
       </div>
     </div>

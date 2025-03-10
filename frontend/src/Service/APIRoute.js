@@ -11,7 +11,8 @@ export const authendpoints = {
 
 export const categoryendpoints = {
     CREATE_CATEGORY_API: BASE_URL + '/api/category/create-category',
-    GET_CATEGORIES_API: BASE_URL + '/api/category/get-categories'
+    GET_CATEGORIES_API: BASE_URL + '/api/category/get-categories',
+    GET_ALL_CATEGORIES_API: BASE_URL + '/api/category/all-categories'
 };
 
 export const subcategoryendpoints = {
@@ -28,7 +29,9 @@ export const blogendpoints = {
     REMOVE_LIKE_API: BASE_URL + '/api/blog/remove-like',
     ADD_BOOKMARK_API: BASE_URL + '/api/blog/add-bookmark',
     REMOVE_BOOKMARK_API: BASE_URL + '/api/blog/remove-bookmark',
-    THUMBNAIL_UPLOAD_API: BASE_URL + '/api/blog/thumbnailupload'
+    THUMBNAIL_UPLOAD_API: BASE_URL + '/api/blog/thumbnailupload',
+    DELETE_BLOG_API: BASE_URL + '/api/blog/delete-blog',
+    GET_BLOGS_BY_CATEGORY_API: BASE_URL + '/api/blog/get-blogs-by-category'
 };
 
 export const searchendpoints = {
@@ -38,4 +41,11 @@ export const searchendpoints = {
 export const commentendpoints = {
     CREATE_COMMENT_API: BASE_URL + '/api/comment/addComment',
     CREATE_REPLY_API: BASE_URL + '/api/comment/addReply'
+};
+
+export const profileendpoints = {
+    GET_BOOKMARKED_ITEMS_API: BASE_URL + '/api/profile/get-bookmarked-items',
+    UPDATE_IMAGE_API: BASE_URL + '/api/profile/update-image',
+    UPDATE_PROFILE_API: BASE_URL + '/api/profile/update-profile',
+    UPDATE_SOCIAL_LINKS_API: BASE_URL + '/api/profile/update-social-links'
 };

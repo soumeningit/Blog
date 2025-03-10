@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import SearchSkeltonLoader from "./Common/SearchSkeltonLoader";
 import { setLoading, setSearchData } from "../Redux/Slice/searchSlice";
@@ -10,7 +10,6 @@ import BlogCard from "./BlogCard";
 function SearchItem() {
   const { loading, searchData } = useSelector((state) => state.search);
   const { query } = useParams();
-
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -18,11 +17,12 @@ function SearchItem() {
       dispatch(setLoading(true));
       try {
         const response = await searchDataAPI(query);
-        console.log("Search response : ", response);
         dispatch(setLoading(false));
         if (response.data.success) {
           dispatch(setSearchData(response.data.data));
           toast.success("Item fetched successfully");
+        } else {
+          toast.error("No Data Found");
         }
       } catch (error) {
         dispatch(setLoading(false));
@@ -32,9 +32,7 @@ function SearchItem() {
         dispatch(setLoading(false));
       }
     }
-    if (searchData === null) {
-      submitSearch();
-    }
+    submitSearch();
   }, [query]);
 
   return (
@@ -43,7 +41,7 @@ function SearchItem() {
         <SearchSkeltonLoader />
       ) : (
         <div className="grid grid-cols-3 gap-4 md:grid-cols-2 lg:grid-cols-4 bg-slate-800 p-4">
-          {searchData ? (
+          {searchData.length > 0 ? (
             searchData.map((item) => (
               <BlogCard
                 key={item._id}
@@ -55,7 +53,7 @@ function SearchItem() {
               />
             ))
           ) : (
-            <h1>No data found</h1>
+            <h1 className="text-gray-400">No data found</h1>
           )}
         </div>
       )}

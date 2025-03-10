@@ -36,9 +36,6 @@ const userSchema = new mongoose.Schema({
     resetTokenTime: {
         type: Date,
     },
-    gender: {
-        type: String,
-    },
     image: {
         type: String,
     },

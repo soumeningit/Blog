@@ -11,7 +11,9 @@ const {
     removeLike,
     addBookMark,
     removeBookMark,
-    thumbnailUpload
+    thumbnailUpload,
+    deleteBlog,
+    getGetBlogsByCategory
 } = require('../Controller/Blog');
 
 router.post('/create-blog', auth, isAuthor, createBlog);
@@ -23,5 +25,7 @@ router.post('/remove-like', auth, removeLike);
 router.post('/add-bookmark', auth, addBookMark);
 router.post('/remove-bookmark', auth, removeBookMark);
 router.post('/thumbnailupload', auth, thumbnailUpload);
+router.post('/delete-blog', auth, isAuthor, deleteBlog);
+router.get('/get-blogs-by-category', getGetBlogsByCategory);
 
 module.exports = router;
