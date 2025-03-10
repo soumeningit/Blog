@@ -54,7 +54,7 @@ npm install
 #### 3️⃣ Configure Environment Variables
 Create a `.env` file in the backend folder and add the following:
 ```env
-PORT=5000
+PORT=4000
 MONGO_URI=your_mongodb_connection_string
 JWT_SECRET=your_secret_key
 ```
@@ -85,12 +85,8 @@ The frontend will be available at `http://localhost:3000`, and the backend at `h
 
 ## 🚀 Future Enhancements
 - **Image Upload for Blog Posts**
-- **Like & Comment System**
-- **Search & Filter Features**
+- **Make an Admin Dashboard**
 - **Deployment on a Hosting Platform**
-
-## 📜 License
-This project is licensed under the MIT License.
 
 ## 🤝 Contributing
 Contributions are welcome! Feel free to open issues or submit pull requests.
