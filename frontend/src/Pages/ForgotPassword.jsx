@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 import toast from "react-hot-toast";
 import { forgotPasswordToken } from "../Service/API/AuthAPI";
+import { useNavigate } from "react-router-dom";
 
 function ForgotPassword() {
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
 
@@ -15,6 +17,7 @@ function ForgotPassword() {
       toast.dismiss(toastId);
       if (response.success === true) {
         toast.success(response.message);
+        navigate("/signin");
         return;
       }
     } catch (error) {
@@ -53,7 +56,7 @@ function ForgotPassword() {
           />
           <button
             type="submit"
-            className="bg-blue-600 hover:bg-blue-500 transition duration-300 text-white py-2 px-6 rounded-lg font-semibold w-full"
+            className="bg-blue-600 hover:bg-blue-500 transition duration-300 text-white py-2 px-6 rounded-lg font-semibold w-full cursor-pointer"
           >
             Send Reset Link
           </button>
