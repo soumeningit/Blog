@@ -1,13 +1,29 @@
 import React, { useState } from "react";
+import toast from "react-hot-toast";
+import { forgotPasswordToken } from "../Service/API/AuthAPI";
 
 function ForgotPassword() {
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Simulate API call
-    setMessage("If the email is registered, a reset link has been sent.");
+    setMessage("A reset link has been sent to the registered email.");
+    const toastId = toast.loading("Loading...");
+    try {
+      const response = await forgotPasswordToken({ email });
+      toast.dismiss(toastId);
+      if (response.success === true) {
+        toast.success(response.message);
+        return;
+      }
+    } catch (error) {
+      toast.dismiss(toastId);
+      console.log("Error in sending reset link", error);
+      toast.error(error.response.data.message);
+    } finally {
+      toast.dismiss(toastId);
+    }
   };
 
   return (
