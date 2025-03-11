@@ -20,7 +20,12 @@ connectDB();
 const allowedOrigins = [
     'http://localhost:5173',
     'http://localhost:5000',
-    'http://localhost:5000'
+    'http://localhost:5000',
+    'http://localhost:4000',
+    'http://localhost:4001',
+    'blogapp-3peamr9op-soumen-pals-projects.vercel.app',
+    'blogapp-tau-flame.vercel.app',
+    'https://blog-vu5d.onrender.com'
 ];
 
 app.use(cors(
