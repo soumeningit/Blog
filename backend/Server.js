@@ -23,8 +23,8 @@ const allowedOrigins = [
     'http://localhost:5000',
     'http://localhost:4000',
     'http://localhost:4001',
-    'blogapp-3peamr9op-soumen-pals-projects.vercel.app',
-    'blogapp-tau-flame.vercel.app',
+    'https://blogapp-3peamr9op-soumen-pals-projects.vercel.app',
+    'https://blogapp-tau-flame.vercel.app',
     'https://blog-vu5d.onrender.com'
 ];
 
