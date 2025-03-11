@@ -1,6 +1,7 @@
 const User = require('../DataBase/User');
 const bcrypt = require("bcrypt");
 const crypto = require("crypto");
+const mailSender = require('../Utils/mailSender');
 
 // const { passwordReset } = require("../mail/templates/passwordReset")
 
