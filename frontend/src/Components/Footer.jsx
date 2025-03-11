@@ -6,6 +6,7 @@ import {
   FaLinkedin,
   FaGithub,
 } from "react-icons/fa";
+import { AiOutlineMail } from "react-icons/ai";
 
 function Footer() {
   return (
@@ -42,8 +43,8 @@ function Footer() {
         <div className="flex flex-col space-y-4">
           <h2 className="text-white text-lg font-semibold">Contact Us</h2>
           <p>Email: support@blogplatform.com</p>
-          <p>Phone: +91 8927709731</p>
-          <p>Address: Basanchhora, Chattraganja, 721201</p>
+          <p>Phone: +91 0123456789</p>
+          <p>Address: Kolkata, West Bengal</p>
         </div>
 
         {/* Newsletter Subscription */}
@@ -69,35 +70,42 @@ function Footer() {
       <div className="border-t border-gray-700 py-8 mt-10">
         <div className="container mx-auto flex justify-center space-x-10">
           <a
+            href="mailto:soumenpalcs@gmail.com"
+            target="_blank"
+            className="hover:text-cyan-400"
+          >
+            <AiOutlineMail size={24} />
+          </a>
+          {/* <a
             href="https://facebook.com"
             target="_blank"
             className="hover:text-cyan-400"
           >
             <FaFacebook size={24} />
-          </a>
+          </a> */}
           <a
-            href="https://instagram.com"
+            href="https://www.instagram.com/spal0_1/"
             target="_blank"
             className="hover:text-cyan-400"
           >
             <FaInstagram size={24} />
           </a>
-          <a
+          {/* <a
             href="https://twitter.com"
             target="_blank"
             className="hover:text-cyan-400"
           >
             <FaTwitter size={24} />
-          </a>
+          </a> */}
           <a
-            href="https://linkedin.com"
+            href="https://www.linkedin.com/in/soumenpal01/"
             target="_blank"
             className="hover:text-cyan-400"
           >
             <FaLinkedin size={24} />
           </a>
           <a
-            href="https://github.com"
+            href="https://github.com/soumeningit"
             target="_blank"
             className="hover:text-cyan-400"
           >
