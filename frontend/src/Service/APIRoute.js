@@ -1,4 +1,6 @@
-const BASE_URL = import.meta.env.VITE_APP_API_URL;
+const BASE_URL = process.env.NODE_ENV === 'production'
+    ? import.meta.env.VITE_APP_REMOTE_API_URL
+    : import.meta.env.VITE_APP_LOCAL_API_URL;
 
 export const authendpoints = {
     SEND_OTP_API: BASE_URL + '/api/auth/sendOTP',

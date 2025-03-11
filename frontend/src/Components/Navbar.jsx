@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { componentData } from "../Utils/Data";
 import { useDispatch, useSelector } from "react-redux";
 import user from "../assets/user.png";
-import user_avtar from "../assets/user_avtar.png";
 import Modal from "./Common/Modal";
 
 function Navbar() {
