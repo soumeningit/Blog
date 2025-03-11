@@ -2,13 +2,12 @@ const User = require('../DataBase/User');
 const bcrypt = require("bcrypt");
 const crypto = require("crypto");
 const mailSender = require('../Utils/mailSender');
+const { passwordReset } = require('../Utils/mail/templates/passwordReset');
 
-// const { passwordReset } = require("../mail/templates/passwordReset")
-
-// reset Pasword token
 exports.resetPasswordToken = async (req, res) => {
     try {
-        // fetch the data, get the email
+        console.log("INSIDE RESET PASSWORD TOKEN");
+        console.log("REQ BODY : ", req.body);
         const { email } = req.body;
         // check if the email exists
         if (!email) {
@@ -27,22 +26,7 @@ exports.resetPasswordToken = async (req, res) => {
                     message: "No user found with this email address."
                 })
         }
-        /*
-        // generate token
-        const uuid = crypto.randomUUID(); // string containing a randomly generated, 36 character long v4 UUID.Used for cryptography, it generate random number.
-        console.log(uuid);
-        // save the token in the database
-        const token = await User.findOneAndUpdate({ email: email }, {
-            email: email,
-            token: uuid,
-            resetTokenTime: Date.now() + 2 * 60 * 1000
-        },
-            { new: true })
-        // create url
-        const url = `http://localhost:3000/update-password/${token}`
-        // send the url to the email
-        await mailSender(email, "Password Reset Link", `Password reset link :${url}`)*/
-
+        console.log("USER", user);
         const token = crypto.randomBytes(20).toString("hex");
 
         const updatedDetails = await User.findOneAndUpdate(
@@ -86,7 +70,8 @@ exports.resetPasswordToken = async (req, res) => {
 // reset Password
 exports.resetPassword = async (req, res) => {
     try {
-        // fetch data
+        console.log("INSIDE RESET PASSWORD");
+        console.log("REQ BODY : ", req.body);
         const { password, confirmPassword, token } = req.body;
         // validate
         console.log("inside reset-password in server ", "password : ", password, "confirmPassword : ", confirmPassword, " token : ", token)
@@ -115,6 +100,7 @@ exports.resetPassword = async (req, res) => {
                     message: "Invalid token, User not found"
                 })
         }
+        console.log("USER DETAILS", userDetails);
         // token time check
         if (userDetails.tokenExpireTime < Date.now()) {
             return res.status(408)
@@ -126,13 +112,18 @@ exports.resetPassword = async (req, res) => {
         // hash password
         const hashedPassword = await bcrypt.hash(password, 10);
         // update into db
-        await User.findOneAndUpdate({ token: token }, { password: hashedPassword }, { new: true })
-        // send response
-        return res.status(200)
-            .json({
-                success: true,
-                message: "Password reset successfully"
+        const updatedUser = await User.findOneAndUpdate({ token: token }, { password: hashedPassword }, { new: true })
+        console.log("UPDATED USER", updatedUser);
+        if (!updatedUser) {
+            return res.status(400).json({
+                success: false,
+                message: "Password reset failed!"
             })
+        }
+        return res.status(200).json({
+            success: true,
+            message: "Password reset successfully"
+        })
 
     } catch (e) {
         console.log("Reset Password failed!, please try after some time")

@@ -7,7 +7,7 @@ export const authendpoints = {
     REGISTER_API: BASE_URL + '/api/auth/signUp',
     LOGIN_API: BASE_URL + '/api/auth/login',
     FORGOT_PASSWORD_API: BASE_URL + '/api/auth/createresetpasswordtoken',
-    NEW_PASSWORD_API: BASE_URL + '/api/auth/resetpassword',
+    NEW_PASSWORD_API: BASE_URL + '/api/auth/resetPassword',
     LOG_OUT_API: BASE_URL + '/api/auth/logout'
 };
 

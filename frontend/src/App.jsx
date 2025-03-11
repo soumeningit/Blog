@@ -30,7 +30,7 @@ function App() {
         <Route path="/signin" element={<Login />} />
         <Route path="/otp-verification" element={<OtpVerification />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
-        <Route path="/update-password" element={<NewPassword />} />
+        <Route path="/update-password/:id" element={<NewPassword />} />
         <Route path="/blog/:id" element={<ShowBlog />} />
         <Route path="/search/:query" element={<SearchItem />} />
         <Route element={<DashboardMain />} path="/dashboard">

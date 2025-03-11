@@ -1,18 +1,39 @@
 import React, { useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { resetPassword } from "../Service/API/AuthAPI";
+import toast from "react-hot-toast";
 
 function NewPassword() {
+  const { id } = useParams();
+  // console.log("ID in update password", id);
+
+  const navigate = useNavigate();
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (password !== confirmPassword) {
       setError("Passwords do not match");
     } else {
       setError("");
-      // Handle password reset logic here
-      console.log("Password successfully updated");
+      try {
+        const response = await resetPassword({
+          password,
+          confirmPassword,
+          token: id,
+        });
+        console.log("Password reset response", JSON.stringify(response));
+        console.log("Password reset response", response);
+        if (response.success === true) {
+          toast.success("Password reset successfully");
+          navigate("/signin");
+        }
+      } catch (error) {
+        console.log("Error in sending reset link", error);
+        setError("Error in resetting password");
+      }
     }
   };
 
@@ -55,7 +76,7 @@ function NewPassword() {
           {error && <p className="text-red-500 text-sm">{error}</p>}
           <button
             type="submit"
-            className="w-full bg-blue-600 hover:bg-blue-500 transition duration-300 text-white py-2 px-6 rounded-lg font-semibold"
+            className="w-full bg-blue-600 hover:bg-blue-500 transition duration-300 text-white py-2 px-6 rounded-lg font-semibold cursor-pointer"
           >
             Reset Password
           </button>

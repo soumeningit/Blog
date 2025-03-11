@@ -1,22 +1,25 @@
 import React, { useState } from "react";
 import toast from "react-hot-toast";
 import { forgotPasswordToken } from "../Service/API/AuthAPI";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
-function ForgotPassword() {
+function UpdatePassword() {
+  const { id } = useParams();
+  console.log("ID in update password", id);
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setMessage("A reset link has been sent to the registered email.");
     const toastId = toast.loading("Loading...");
     try {
       const response = await forgotPasswordToken({ email });
       toast.dismiss(toastId);
       if (response.success === true) {
-        toast.success("Password reset link sent Successfully");
-        setMessage("A reset link has been sent to the registered email.");
+        toast.success(response.message);
+        navigate("/signin");
         return;
       }
     } catch (error) {
@@ -65,4 +68,4 @@ function ForgotPassword() {
   );
 }
 
-export default ForgotPassword;
+export default UpdatePassword;
