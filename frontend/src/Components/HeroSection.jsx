@@ -1,29 +1,8 @@
-// import React from "react";
-// import img from "../assets/hero-1.jpg";
-
-// function HeroSection() {
-//   return (
-//     <div
-//       className="flex flex-col h-screen bg-cover bg-center bg-no-repeat"
-//       // style={{
-//       //   backgroundImage: `url(${img})`,
-//       // }}
-//     >
-//       <div className="flex flex-col items-center justify-center h-full ">
-//         <h1 className="text-4xl font-bold text-white">
-//           Welcome to our website
-//         </h1>
-//         <p className="text-lg text-white">We provide the best services</p>
-//       </div>
-//     </div>
-//   );
-// }
-
-// export default HeroSection;
-
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
-function HeroSection() {
+function HeroSection({ scrollToAllPost }) {
+  const navigate = useNavigate();
   return (
     <section className="bg-gradient-to-r from-gray-900 via-cyan-900 to-gray-900 text-white min-h-[90vh] flex flex-col items-center justify-center text-center px-4">
       <div className="max-w-4xl">
@@ -35,10 +14,16 @@ function HeroSection() {
           articles, and stories from talented authors around the world.
         </p>
         <div className="flex space-x-4 justify-center">
-          <button className="bg-cyan-500 text-white px-6 py-3 rounded-lg text-lg font-semibold hover:bg-cyan-600 transition-all">
+          <button
+            onClick={scrollToAllPost}
+            className="bg-cyan-500 text-white px-6 py-3 rounded-lg text-lg font-semibold hover:bg-cyan-600 transition-all cursor-pointer"
+          >
             Explore Blogs
           </button>
-          <button className="border border-cyan-500 text-cyan-500 px-6 py-3 rounded-lg text-lg font-semibold hover:bg-cyan-500 hover:text-white transition-all">
+          <button
+            onClick={() => navigate("/guidelines")}
+            className="border border-cyan-500 text-cyan-500 px-6 py-3 rounded-lg text-lg font-semibold hover:bg-cyan-500 hover:text-white transition-all cursor-pointer"
+          >
             Write a Blog
           </button>
         </div>

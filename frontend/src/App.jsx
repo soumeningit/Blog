@@ -17,10 +17,11 @@ import ShowBlog from "./Components/ShowBlog";
 import EditBlog from "./Components/EditBlog";
 import SearchItem from "./Components/SearchItem";
 import FileUpload from "./Components/FileUpload";
+import GuidlineForBlogWrite from "./Components/GuidlineForBlogWrite";
 
 function App() {
   return (
-    <div className="bg-sky-100 dark:bg-slate-800 min-h-screen w-screen">
+    <div className="bg-sky-100 dark:bg-slate-800 min-h-screen">
       <Navbar />
       <Routes>
         <Route path="/" element={<Home />} />
@@ -31,6 +32,7 @@ function App() {
         <Route path="/otp-verification" element={<OtpVerification />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/update-password/:id" element={<NewPassword />} />
+        <Route path="/guidelines" element={<GuidlineForBlogWrite />} />
         <Route path="/blog/:id" element={<ShowBlog />} />
         <Route path="/search/:query" element={<SearchItem />} />
         <Route element={<DashboardMain />} path="/dashboard">
