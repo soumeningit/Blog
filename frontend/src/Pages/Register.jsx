@@ -25,12 +25,17 @@ function Register() {
 
   async function handleSubmit(e) {
     e.preventDefault();
-    console.log(formData);
+    // console.log(formData);
     const toastId = toast.loading("Sending OTP...");
     try {
+      if (formData.password !== formData.confirmPassword) {
+        toast.dismiss(toastId);
+        toast.error("Passwords do not match");
+        return;
+      }
       const response = await sendOTP(formData);
-      console.log("OTP sent successfully", response);
-      console.log("Response in register page : ", JSON.stringify(response));
+      // console.log("OTP sent successfully", response);
+      // console.log("Response in register page : ", JSON.stringify(response));
       toast.dismiss(toastId);
       if (response.data.success === true) {
         dispatch(setRegisterData(formData));
