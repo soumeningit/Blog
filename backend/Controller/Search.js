@@ -12,66 +12,6 @@ exports.searchController = async (req, res) => {
                 message: "Query is required"
             });
         }
-        // const userFilter = {
-        //     $or: [
-        //         { firstName: { $regex: query, $options: "i" } },
-        //         { lastName: { $regex: query, $options: "i" } },
-        //         { email: { $regex: query, $options: "i" } },
-        //     ]
-        // };
-        // const userFilterData = await User.find(userFilter).select(
-        //     "firstName lastName email accountType"
-        // );
-
-        // let userId = [];
-        // if (userFilterData.length > 0) {
-        //     userFilterData.forEach((data) => {
-        //         if (data.accountType === "author") {
-        //             userId.push(data._id);
-        //         }
-        //     })
-        // }
-
-        // console.log("User Filter Data", userFilterData);
-
-        // let content = [];
-        // if (userId.length > 0) {
-        //     for (let i = 0; i < userId.length; i++) {
-        //         const contentData = await Content.find({ userDetail: userId[i] }).select(
-        //             "title description thumbnail content"
-        //         )
-        //         content.push(...contentData);
-        //     }
-        // }
-        // console.log("User Ids", userId);
-        // console.log("Content", content);
-
-        // const contentFilter = {
-        //     $or: [
-        //         { title: { $regex: query, $options: "i" } },
-        //         { description: { $regex: query, $options: "i" } },
-        //     ]
-        // };
-
-        // const contentData = await Content.find(contentFilter).select(
-        //     "title description thumbnail content"
-        // );
-        // console.log("Content Data", contentData);
-        // let data = [];
-        // if (contentData.length > 0) {
-        //     data.push(...contentData);
-        // }
-        // if (content.length > 0) {
-        //     data.push(...content);
-        // }
-        // console.log("Data", data);
-
-        // if (data.length === 0) {
-        //     return res.status(404).json({
-        //         success: false,
-        //         message: "No data found"
-        //     });
-        // }
 
         // Optimized Code
 
