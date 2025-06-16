@@ -33,7 +33,8 @@ export const blogendpoints = {
     REMOVE_BOOKMARK_API: BASE_URL + '/api/blog/remove-bookmark',
     THUMBNAIL_UPLOAD_API: BASE_URL + '/api/blog/thumbnailupload',
     DELETE_BLOG_API: BASE_URL + '/api/blog/delete-blog',
-    GET_BLOGS_BY_CATEGORY_API: BASE_URL + '/api/blog/get-blogs-by-category'
+    GET_BLOGS_BY_CATEGORY_API: BASE_URL + '/api/blog/get-blogs-by-category',
+    EDIT_BLOG_API: BASE_URL + '/api/blog/edit-blog'
 };
 
 export const searchendpoints = {

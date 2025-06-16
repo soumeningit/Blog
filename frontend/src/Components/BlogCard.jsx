@@ -10,19 +10,19 @@ function BlogCard({ image, title, description, likes, id, showEdit }) {
 
   return (
     <div className="max-w-xs bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700 transform transition-all duration-300 hover:shadow-lg hover:scale-105">
-      <a href="#">
+      <>
         <img
           className="w-full h-32 object-cover rounded-t-lg transition-transform duration-300 ease-in-out hover:scale-105"
           src={image}
           alt="Blog Thumbnail"
         />
-      </a>
+      </>
       <div className="p-3">
-        <a href="#">
+        <>
           <h5 className="mb-1 text-lg font-bold tracking-tight text-gray-900 dark:text-white transition-all duration-200 hover:text-blue-500 cursor-pointer">
             {title}
           </h5>
-        </a>
+        </>
         <p className="mb-2 text-sm font-normal text-gray-700 dark:text-gray-400">
           {description.split(" ").slice(0, 10).join(" ")}...
         </p>

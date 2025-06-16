@@ -34,7 +34,7 @@ function DashboardMain() {
           {dashboardlinks.map((item) => (
             <li key={item.id}>
               <NavLink
-                to={`/dashboard/${item.url}`}
+                to={`/dashboard/${item.url}`} // isActive provided by react-router-dom by using Navlink
                 className={({ isActive }) =>
                   `flex items-center space-x-3 p-2 rounded-lg transition ${
                     isActive

@@ -3,7 +3,6 @@ import { createSlice } from "@reduxjs/toolkit";
 function getUserFromStorage() {
     try {
         const user = localStorage.getItem("user");
-        console.log("User from storage:", user + typeof (user));
         return user ? JSON.parse(user) : null;
     } catch (error) {
         console.error("Error parsing user data from localStorage:", error);

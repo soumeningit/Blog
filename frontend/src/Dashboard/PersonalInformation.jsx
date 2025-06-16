@@ -46,7 +46,7 @@ function PersonalInformation() {
     const toastId = toast.loading("Updating Profile...");
     try {
       const response = await updateProfileAPI(data, token);
-      console.log("UPDATE PROFILE RESPONSE: ", response);
+      // console.log("UPDATE PROFILE RESPONSE: ", response);
       toast.dismiss(toastId);
       if (response.data.success) {
         toast.success(response.data.message);
@@ -181,6 +181,7 @@ function PersonalInformation() {
             className="bg-gray-700 border border-gray-600 rounded-md text-gray-50 p-2 outline-none focus:ring-2 focus:ring-cyan-400 transition-all"
           />
         </div>
+
         {/* Gender */}
         <div className="flex flex-col space-y-2">
           <label htmlFor="dob" className="text-gray-400 text-sm">
@@ -199,6 +200,7 @@ function PersonalInformation() {
             <option value="others">Others</option>
           </select>
         </div>
+
         {/* Pin Code */}
         <div className="flex flex-col space-y-2">
           <label htmlFor="pincode" className="text-gray-400 text-sm">
@@ -213,6 +215,7 @@ function PersonalInformation() {
             className="bg-gray-700 border border-gray-600 rounded-md text-gray-50 p-2 outline-none focus:ring-2 focus:ring-cyan-400 transition-all"
           />
         </div>
+
         <div className="flex flex-col space-y-2 col-span-2">
           <label htmlFor="bio" className="text-gray-400 text-sm">
             Bio
@@ -225,6 +228,7 @@ function PersonalInformation() {
             className="bg-gray-700 border border-gray-600 rounded-md text-gray-50 p-2 outline-none focus:ring-2 focus:ring-cyan-400 transition-all"
           />
         </div>
+
         <button
           onClick={submitUserData}
           className="cursor-pointer w-fit bg-cyan-500 text-gray-50 px-4 py-2 rounded-md hover:bg-cyan-600 transition-all col-span-2"

@@ -64,7 +64,7 @@ function SocialMediaLinks() {
 
   const removeOtherLink = (index) => {
     setSocialLinks((prev) => {
-      const newOthers = prev.Others.filter((link, i) => i !== index);
+      const newOthers = prev.Others.filter((_, i) => i !== index);
       return {
         ...prev,
         Others: newOthers,

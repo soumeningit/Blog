@@ -42,11 +42,21 @@ exports.getBookMarkedItems = async (req, res) => {
             const item = await Content.findById({ _id: bookmark });
             bookmarkedItems.push(item);
         }
-
+        data = {
+            bookmarks: bookmarkedItems,
+            user: {
+                firstName: isUser.firstName,
+                lastName: isUser.lastName,
+                email: isUser.email,
+                accountType: isUser.accountType,
+                additionalDetails: isUser.additionalDetails
+            }
+        }
         if (bookmarkedItems.length === 0) {
             return res.status(200).json({
                 success: true,
-                message: "No bookmarks found"
+                message: "No bookmarks found",
+                data
             });
         }
 

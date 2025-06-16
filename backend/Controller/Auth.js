@@ -209,7 +209,7 @@ exports.logInController = async (req, res) => {
             }
 
             const token = jwt.sign(payload, process.env.JWT_PRIVATEKEY, {
-                expiresIn: "2h"
+                expiresIn: "2 days"
             });
 
             const data = {};

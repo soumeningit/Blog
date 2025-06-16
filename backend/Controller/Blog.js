@@ -685,3 +685,73 @@ exports.getGetBlogsByCategory = async (req, res) => {
         });
     }
 };
+
+exports.editBlog = async (req, res) => {
+    try {
+        console.log("INSIDE EDIT BLOG .....");
+        console.log("req.body : " + JSON.stringify(req.body));
+
+        const data = req.body;
+        console.log("data : ", data.payload);
+
+        const { id, title, description, content, category, subCategory, userId } = req.body.payload;
+
+        if (!id || !title || !description || !content || !category || !subCategory || !userId) {
+            return res.status(400).json({
+                success: false,
+                message: "Please provide all the required fields"
+            });
+        }
+
+        const userDetails = await User.findById({ _id: userId });
+        if (!userDetails) {
+            return res.status(400).json({
+                success: false,
+                message: "User not found"
+            });
+        }
+
+        const contentData = await Content.findById({ _id: id });
+        if (!contentData) {
+            return res.status(400).json({
+                success: false,
+                message: "Content not found"
+            });
+        }
+
+        const updatedContent = await Content.findByIdAndUpdate(
+            { _id: id },
+            {
+                title,
+                description,
+                content,
+                userDetail: userId,
+                categor: category,
+                subCategory: subCategory
+            },
+            { new: true }   // Return the updated document
+        );
+        console.log("updatedContent : " + JSON.stringify(updatedContent));
+
+        if (!updatedContent) {
+            return res.status(500).json({
+                success: false,
+                message: "Internal Server Error"
+            });
+        }
+
+
+        return res.status(200).json({
+            success: true,
+            message: "Blog Updated Successfully",
+            data: updatedContent
+        });
+
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({
+            success: false,
+            message: "Internal Server Error"
+        });
+    }
+}

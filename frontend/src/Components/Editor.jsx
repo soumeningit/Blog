@@ -1,4 +1,4 @@
-import React, { useState, useRef, useMemo, useEffect } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import JoditEditor from "jodit-react";
 import { useSelector } from "react-redux";
 import { getCategories } from "../Service/API/CategoryAPI";
@@ -9,10 +9,10 @@ import { IoCloudUploadOutline } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
 
 function Editor({ placeholder }) {
-  const { token } = useSelector((state) => state.auth);
-  const { user } = useSelector((state) => state.auth);
+  const { token, user } = useSelector((state) => state.auth);
   const editor = useRef(null);
   const navigate = useNavigate();
+
   const [thumbnailUploadData, setThumbnailUploadData] = useState();
   const [contentDetails, setContentDetails] = useState({
     title: "",
@@ -27,8 +27,6 @@ function Editor({ placeholder }) {
   const [categories, setCategories] = useState([]);
   const [subCategories, setSubCategories] = useState([]);
   const [file, setFile] = useState(null);
-
-  console.log("user" + user);
 
   async function fetchSubCategories(categoryId) {
     try {
@@ -61,23 +59,25 @@ function Editor({ placeholder }) {
 
   async function submitContent(e) {
     e.preventDefault();
-    console.log("contentDetails : " + JSON.stringify(contentDetails));
-    if (contentDetails.description.trim().split(/\s+/).length > 50) {
+    const wordCount = contentDetails.description
+      .trim()
+      .split(/\s+/)
+      .filter(Boolean).length;
+    if (wordCount > 50) {
       setError("Description should not be more than 50 words.");
       return;
     }
+
     const toastId = toast.loading("Creating blog...");
     try {
       const response = await createBlogAPI(contentDetails, token);
-      toast.dismiss(toastId);
-      console.log("response : " + JSON.stringify(response));
       if (response.data.success) {
         toast.success("Blog created successfully");
         // navigate(`/dashboard/file-upload/${response.data.data._id}`);
       }
     } catch (error) {
-      toast.dismiss(toastId);
       console.log("Error in submitContent : ", error);
+      toast.error("Failed to create blog.");
     } finally {
       toast.dismiss(toastId);
     }
@@ -95,20 +95,19 @@ function Editor({ placeholder }) {
       }
     }
     fetchCategories();
-  }, []);
+  }, [token]);
 
   async function handleImageUpload() {
-    console.log("file : " + file);
     if (!file) return;
     const formData = new FormData();
     formData.append("thumbnail", file);
-    formData.append("userId", user.userId);
+    formData.append("userId", user?.userId);
     formData.append("title", contentDetails.title);
     formData.append("description", contentDetails.description);
-    formData.append("profile", user.additionalDetails);
+    formData.append("profile", user?.additionalDetails);
+
     try {
       const response = await thumbnailUploadAPI(formData, token);
-      console.log("response : " + JSON.stringify(response));
       if (response.data.success) {
         setContentDetails({
           ...contentDetails,
@@ -120,12 +119,23 @@ function Editor({ placeholder }) {
       }
     } catch (error) {
       console.log("Error in handleImageUpload : ", error);
+      toast.error("Thumbnail upload failed");
     }
   }
+
+  const isSubmitDisabled =
+    !contentDetails.title ||
+    !contentDetails.description ||
+    !contentDetails.content ||
+    !contentDetails.category ||
+    !file;
+
   return (
     <>
       <div className="max-w-3xl mx-auto p-6 rounded-lg shadow-md border bg-white">
         <h2 className="text-2xl font-semibold mb-4">Text Editor</h2>
+
+        {/* Title */}
         <label className="block text-sm font-medium text-gray-700 mb-2">
           Title <span className="text-red-600 font-semibold">*</span>
         </label>
@@ -140,6 +150,8 @@ function Editor({ placeholder }) {
           required
           className="w-full p-2 border rounded-md mb-4"
         />
+
+        {/* Description */}
         <label className="block text-sm font-medium text-gray-700 mb-2">
           Description <span className="text-red-600 font-semibold">*</span>
         </label>
@@ -158,10 +170,11 @@ function Editor({ placeholder }) {
         />
         {error && <p className="text-red-600 text-sm">{error}</p>}
 
+        {/* Thumbnail Upload */}
         <label className="block text-sm font-medium text-gray-700 mb-2">
           Upload Thumbnail <span className="text-red-600 font-semibold">*</span>
           <span className="text-sm text-red-500 ml-2">
-            Supported Format:.jpg,jpeg,.png
+            Supported Format: .jpg, .jpeg, .png
           </span>
         </label>
         <div className="flex items-center gap-2 relative">
@@ -178,6 +191,8 @@ function Editor({ placeholder }) {
             onClick={handleImageUpload}
           />
         </div>
+
+        {/* Category */}
         <label className="block text-sm font-medium text-gray-700 mb-2">
           Select Category <span className="text-red-600 font-semibold">*</span>
         </label>
@@ -202,6 +217,7 @@ function Editor({ placeholder }) {
           ))}
         </select>
 
+        {/* Sub Category */}
         {contentDetails.category && (
           <>
             <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -230,12 +246,12 @@ function Editor({ placeholder }) {
               {contentDetails.subCategory.map((data) => (
                 <span
                   key={data.id}
-                  className="px-3 py-1 cursor-pointer bg-gray-200 text-sm rounded-full flex items-center gap-2"
+                  className="px-3 py-1 bg-gray-200 text-sm rounded-full flex items-center gap-2"
                 >
                   {data.name}
                   <button
                     onClick={() => removeSubCategory(data.id)}
-                    className="text-red-500 hover:text-red-700 cursor-pointer text-base"
+                    className="text-red-500 hover:text-red-700 text-base"
                   >
                     ×
                   </button>
@@ -245,6 +261,7 @@ function Editor({ placeholder }) {
           </>
         )}
 
+        {/* Jodit Editor */}
         <JoditEditor
           ref={editor}
           value={contentDetails.content}
@@ -253,29 +270,28 @@ function Editor({ placeholder }) {
             placeholder: placeholder || "Start typing...",
             height: 300,
           }}
-          onBlur={(prev) => {
+          onChange={(newContent) => {
             setContentDetails({
               ...contentDetails,
-              content: prev,
+              content: newContent,
             });
           }}
           className="w-full border rounded-md bg-white text-sm"
         />
 
+        {/* Submit Button */}
         <button
           onClick={submitContent}
-          className="mt-4 w-full py-3 bg-blue-600 cursor-pointer text-white font-medium text-lg rounded-md hover:bg-blue-700"
+          disabled={isSubmitDisabled}
+          className={`mt-4 w-full py-3 ${
+            isSubmitDisabled
+              ? "bg-gray-400 cursor-not-allowed"
+              : "bg-blue-600 hover:bg-blue-700"
+          } text-white font-medium text-lg rounded-md cursor-pointer`}
         >
           Submit
         </button>
       </div>
-      {/* {showFileUpload && (
-        <FileUpload
-          showFileUpload={showFileUpload}
-          setShowFileUpload={setShowFileUpload}
-          blogId={blogId}
-        />
-      )} */}
     </>
   );
 }

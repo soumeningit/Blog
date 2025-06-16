@@ -7,7 +7,6 @@ import BlogCard from "../Components/BlogCard";
 function Dashboard() {
   const navigate = useNavigate();
   const { user, token } = useSelector((state) => state.auth);
-  // console.log("User : ", user);
 
   const [blogs, setBlogs] = useState([]);
 
@@ -15,7 +14,6 @@ function Dashboard() {
     async function getBlogs() {
       try {
         const response = await getBlogByUserIdAPI(user.userId, token);
-        console.log("All Posts : ", JSON.stringify(response));
         if (response.data.success) {
           setBlogs(response.data.data);
         }
@@ -25,8 +23,6 @@ function Dashboard() {
     }
     getBlogs();
   }, []);
-
-  // console.log("Blogs : ", blogs);
 
   return (
     <div className="flex flex-col items-center p-4 h-screen overflow-y-auto">
@@ -46,12 +42,12 @@ function Dashboard() {
             />
           ))
         ) : (
-          <p className="text-gray-500 text-center">No Blog Found</p>
+          <p className="text-[#cbc4c4] text-center">No Blog Found</p>
         )}
       </div>
 
       <div className="mt-6 text-center">
-        <p className="text-gray-700">Want to write a blog?</p>
+        <p className="text-[#cac2c2] text-xl">Want to write a blog?</p>
         <button
           onClick={() => navigate("/dashboard/editor")}
           className="mt-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"

@@ -12,7 +12,8 @@ const {
     REMOVE_BOOKMARK_API,
     THUMBNAIL_UPLOAD_API,
     DELETE_BLOG_API,
-    GET_BLOGS_BY_CATEGORY_API
+    GET_BLOGS_BY_CATEGORY_API,
+    EDIT_BLOG_API
 } = blogendpoints;
 
 export const createBlogAPI = async (contentDetails, token) => {
@@ -147,4 +148,17 @@ export const getBlogsByCategoryAPI = async (id) => {
     } catch (error) {
         console.log(error);
     }
-}   
+}
+
+export const editBlogAPI = async (data, token) => {
+    try {
+        const response = await axios.post(EDIT_BLOG_API, data, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+        return response;
+    } catch (error) {
+        throw new Error(error)
+    }
+}

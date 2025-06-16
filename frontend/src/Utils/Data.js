@@ -11,7 +11,7 @@ export const componentData = [
     },
     {
         id: 3,
-        title: "Contact US",
+        title: "Contact Us",
         url: "/contact"
     }
 ]

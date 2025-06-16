@@ -92,7 +92,7 @@ function Navbar() {
               alt="avatar"
               className="rounded-full object-cover h-8 w-8 shadow-lg"
               loading="lazy"
-              onClick={() => setShowModal((prev) => !prev)} // Toggle modal correctly
+              onClick={() => setShowModal((prev) => !prev)}
             />
             {showModal && (
               <Modal

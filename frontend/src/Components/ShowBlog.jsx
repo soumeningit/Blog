@@ -34,12 +34,12 @@ function ShowBlog() {
     const fetchData = async () => {
       try {
         const response = await getBlogByIdAPI(id);
-        console.log("Blog Response : " + JSON.stringify(response));
+        // console.log("Blog Response : " + JSON.stringify(response));
         if (response.data.success) {
           setData(response.data.data);
           setComments(response.data.data.comments);
           const like = response.data.data.likes;
-          console.log("Likes : " + JSON.stringify(like));
+          // console.log("Likes : " + JSON.stringify(like));
           const bookmark = response.data.data.bookmarkedBy;
           if (like.length > 0) {
             const isLiked = like.map((item) => item._id).includes(user.userId);
@@ -68,7 +68,7 @@ function ShowBlog() {
     };
     try {
       const response = await addLikeAPI(data, token);
-      console.log("Like Response : " + JSON.stringify(response));
+      // console.log("Like Response : " + JSON.stringify(response));
       if (response.data.success) {
         setIsAlreadyLiked(true);
       }
@@ -84,7 +84,7 @@ function ShowBlog() {
     };
     try {
       const response = await addBookMarkAPI(data, token);
-      console.log("Bookmark Response : " + JSON.stringify(response));
+      // console.log("Bookmark Response : " + JSON.stringify(response));
       if (response.data.success) {
         setIsAlreadyBookMarked(true);
       }

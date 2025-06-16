@@ -21,16 +21,19 @@ function Profile() {
   const [showFileUpload, setShowFileUpload] = useState(false);
   const userId = user.userId;
 
+  console.log("userId : ", userId, typeof userId);
+
   useEffect(() => {
     const fetchUserData = async () => {
       try {
         const response = await getBookMarkedItemsAPI(token, userId);
+        // console.log("response : ", response);
         if (response.status === 200) {
           setUserData(response.data.data.user);
           setBookmarkedItems(response.data.data.bookmarks);
         }
       } catch (error) {
-        console.log("GET BOOKMARKED ITEMS API ERROR: ", error);
+        console.log("GET USER DATA API ERROR: ", error);
       }
     };
     fetchUserData();
@@ -79,14 +82,14 @@ function Profile() {
         </div>
       </div>
 
-      {/* ✅ Predefined Social Media Links */}
+      {/* Predefined Social Media Links */}
       <h2 className="text-2xl font-bold text-gray-100 mt-8">Connect with me</h2>
       <div className="mt-4 grid grid-cols-3 gap-4 max-w-lg w-full">
         {userData?.additionalDetails?.socialMedia?.facebook && (
           <a
             href={userData.additionalDetails.socialMedia.facebook}
             target="_blank"
-            rel="noopener noreferrer"
+            rel="noopener noreferrer" // provide security at the time of opening link in a new tab
             className="flex items-center justify-center bg-gray-800 rounded-md p-3 text-gray-200 hover:text-cyan-400 transition-all"
           >
             <FaFacebook size={22} />
@@ -134,7 +137,7 @@ function Profile() {
         )}
       </div>
 
-      {/* ✅ Dynamic Other Social Links */}
+      {/* Dynamic Other Social Links */}
       <h2 className="text-2xl font-bold text-gray-100 mt-8">Other Links</h2>
       <div className="mt-4 grid grid-cols-2 gap-4 max-w-lg w-full">
         {userData?.additionalDetails?.socialMedia?.others?.map((item) => (

@@ -64,7 +64,7 @@ function Comment({ blogId, comments, setComments }) {
         },
         token
       );
-      console.log("Reply Response : " + JSON.stringify(response));
+      // console.log("Reply Response : " + JSON.stringify(response));
       toast.dismiss(toastId);
       if (response.data.success) {
         setComments(updatedComments);
@@ -101,29 +101,30 @@ function Comment({ blogId, comments, setComments }) {
             <p className="text-gray-300">{comment?.content}</p>
             {/* Like and Reply and view reply*/}
             <div className="flex items-center space-x-4 mt-2">
-              <span className="flex items-center text-gray-400">
+              {/* <span className="flex items-center text-gray-400">
                 <BiSolidLike
                   className="mt-1 mr-2 cursor-pointer hover:text-blue-400"
                   onClick={() => handleAddLike(comment._id)}
                 />
                 {comment?.likes}
-              </span>
+              </span> */}
               <span
                 className="cursor-pointer text-blue-300 hover:text-blue-500"
                 onClick={() => handleReply(comment._id)}
               >
                 Reply
               </span>
-              {comment?.replies.length > 0 && (
-                <span
-                  onClick={() => setShowReplies(!showReplies)}
-                  className="cursor-pointer text-blue-300 hover:text-blue-500"
-                >
-                  {showReplies
-                    ? `Hide Replies`
-                    : `View ${comment?.replies.length} Replies`}
-                </span>
-              )}
+              {Array.isArray(comment?.replies) &&
+                comment?.replies.length > 0 && (
+                  <span
+                    onClick={() => setShowReplies(!showReplies)}
+                    className="cursor-pointer text-blue-300 hover:text-blue-500"
+                  >
+                    {showReplies
+                      ? `Hide Replies`
+                      : `View ${comment?.replies.length} Replies`}
+                  </span>
+                )}
             </div>
             {/* Reply Input */}
             {showReplyInput && (
