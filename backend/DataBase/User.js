@@ -1,47 +1,53 @@
 const mongoose = require('mongoose');
 
 const userSchema = new mongoose.Schema({
-    firstName: {
+    name: {
         type: String,
         required: true,
-        trim: true,
-    },
-    lastName: {
-        type: String,
-        required: true,
-        trim: true,
+        trim: true
     },
     email: {
         type: String,
         required: true,
+        unique: true,
         trim: true,
+        lowercase: true
     },
     password: {
         type: String,
-        required: true
     },
-    accountType: {
+    role: {
         type: String,
         required: true,
-        enum: ["user", "author", "employee", "admin"]
+        enum: ['user', 'admin', 'author', 'student', 'mentor'],
+        default: 'user'
     },
-    additionalDetails: {
+    is_authorised: {
+        type: Boolean,
+        default: false
+    },
+    savedPosts: [String],
+    follower: [String],
+    following: [String],
+    isOAuthUser: {
+        type: Boolean,
+        default: false
+    },
+    oAuthData: {
         type: mongoose.Schema.Types.ObjectId,
-        required: true,
-        ref: "Profile",
+        ref: 'OAuthUser'
     },
-    token: {
-        type: String,
-    },
-    resetTokenTime: {
-        type: Date,
-    },
-    image: {
-        type: String,
-    },
-    bookmarks: [{
+    userProfile: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "Content",
-    }],
+        ref: 'UserProfile'
+    },
+    status: {
+        type: String,
+        enum: ['active', 'inactive', 'banned'],
+        default: 'active'
+    }
 }, { timestamps: true });
-module.exports = mongoose.model('User', userSchema);
+
+const User = mongoose.model('User', userSchema);
+
+module.exports = User;

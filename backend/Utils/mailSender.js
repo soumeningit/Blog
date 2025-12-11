@@ -1,11 +1,8 @@
 const nodemailer = require("nodemailer");
 
-
-const mailSender = async (email, title, body) => {
+const mailSender = async (senderName, email, title, body) => {
     try {
-        console.log("Inside Mail Sender");
-        console.log(process.env.MAIL_HOST, process.env.MAIL_USER, process.env.MAIL_PASSKEY);
-        console.log(email, title, body);
+        console.log("Inside Mail Sender")
         let transporter = nodemailer.createTransport({
             host: process.env.MAIL_HOST,
             port: 587,
@@ -18,7 +15,7 @@ const mailSender = async (email, title, body) => {
 
         // send mail with defined transport object
         let info = await transporter.sendMail({
-            from: 'Nucleus', // sender address
+            from: `${senderName}`, // sender address
             to: `${email}`, // list of receivers
             subject: `${title}`, // Subject line
             text: "Please Confirm", // plain text body
@@ -31,7 +28,7 @@ const mailSender = async (email, title, body) => {
     } catch (e) {
         console.log("Mail Can't Be Send Right Now")
         console.log(e)
-        console.error(e.message)
+        return null;
     }
 }
 

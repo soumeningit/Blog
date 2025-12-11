@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const contentSchema = new mongoose.Schema({
     title: {
@@ -6,53 +6,65 @@ const contentSchema = new mongoose.Schema({
         required: true,
         trim: true,
     },
-    description: {
-        type: String,
-        required: true,
-        trim: true,
-    },
-    thumbnail: {
-        type: String,
-        required: true,
-        trim: true,
-    },
-    userDetail: {
+    categories: [{
         type: mongoose.Schema.Types.ObjectId,
-        required: true,
-        ref: "User",
-    },
-    profileDetails: {
-        type: mongoose.Schema.Types.ObjectId,
-        required: true,
-        ref: "Profile",
-    },
-    content: {
-        type: String,
-        required: true,
-        trim: true,
-    },
-    likes: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
+        ref: 'Category',
+        required: true
     }],
-    comments: [
-        {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "Comment",
-        }
-    ],
-    category: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Category",
-    },
     subCategory: [{
         type: mongoose.Schema.Types.ObjectId,
-        ref: "SubCategory",
+        ref: 'Category'
     }],
-    bookmarkedBy: [{
+    description: {
+        type: String,
+        trim: true,
+    },
+    tags: [{
+        type: String,
+        trim: true,
+    }],
+    thumbnail: {
+        type: String,
+    },
+    heroSectionImage: {
+        type: String,
+    },
+    readingTime: {
+        type: Number,
+        default: 0
+    },
+    body: {
+        type: String,
+    },
+    authorId: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
+        ref: 'User',
+        required: true
+    },
+    status: {
+        type: String,
+        enum: ['draft', 'published', 'archived'],
+        default: 'published'
+    },
+    author: {
+        type: Object,
+    },
+    likes: [String],
+    comments: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Comment'
     }],
+    views: {
+        type: Number,
+        default: 0
+    },
+    summary: {
+        type: String,
+    },
+    updatedAt: {
+        type: Date,
+        default: Date.now
+    }
 }, { timestamps: true });
 
-module.exports = mongoose.model('Content', contentSchema);
+module.exports = mongoose.model("Content", contentSchema);

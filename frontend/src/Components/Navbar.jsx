@@ -1,109 +1,222 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { componentData } from "../Utils/Data";
-import { useDispatch, useSelector } from "react-redux";
-import user from "../assets/user_avtar.png";
-import Modal from "./Common/Modal";
+import { useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
+import { useDarkMode } from "../contexts/DarkModeContext";
+import { useAuth } from "../contexts/AuthContext";
+import { Cpu, Edit, Grid, Home, Info, Mail } from "lucide-react";
+import ProfileDropdown from "./ProfileDropdown";
+import logo from "../assets/logo.png";
+import logo_svg from "../assets/logo.svg";
+import { useProfile } from "../contexts/ProfileContext";
 
 function Navbar() {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const { darkMode, toggleDarkMode } = useDarkMode();
+  const auth = useAuth();
+  const logout = auth.LogOut;
+  const location = useLocation();
   const navigate = useNavigate();
-  const dispatch = useDispatch();
-  const [activeLink, setActiveLink] = useState(null);
-  const [showModal, setShowModal] = useState(false);
-  const [query, setQuery] = useState("");
+  const authData = auth.getValue();
+  const token = authData?.token;
+  const userData = authData?.user;
+  const profile = useProfile();
+  const profileData = profile?.profileData;
 
-  const handleNavigation = (url, id) => {
-    setActiveLink(id);
-    navigate(url);
+  const navItems = [
+    {
+      label: "Home",
+      path: "/",
+      icon: <Home size={18} className="text-gray-600 dark:text-gray-300" />,
+    },
+    {
+      label: "Categories",
+      path: "/categories",
+      icon: <Grid size={18} className="text-gray-600 dark:text-gray-300" />,
+    },
+    {
+      label: "About",
+      path: "/about",
+      icon: <Info size={18} className="text-gray-600 dark:text-gray-300" />,
+    },
+    {
+      label: "Contact",
+      path: "/contact",
+      icon: <Mail size={18} className="text-gray-600 dark:text-gray-300" />,
+    },
+  ];
+
+  const handleLogout = () => {
+    logout();
+    navigate("/");
+    setIsProfileOpen(false);
   };
 
-  const { token } = useSelector((state) => state.auth);
-
-  const handleSearch = (e) => {
-    setQuery(e.target.value);
-  };
-
-  function submitSearch() {
-    navigate(`/search/${query}`);
+  // Don't show navbar on auth pages
+  if (location.pathname.startsWith("/auth")) {
+    return null;
   }
 
   return (
-    <div className="container flex flex-row justify-evenly rounded-md bg-sky-950 shadow-lg shadow-secondary ring-1 ring-slate-500/10 dark:bg-slate-900 dark:ring-slate-500/20 h-[10vh] shadow-cyan-200">
-      <div>
-        <img src="https://" alt="logo" />
-      </div>
-
-      <div className="flex flex-row items-center justify-evenly cursor-pointer space-x-4 text-gray-100 dark:text-gray-100">
-        {componentData.map((data) => (
-          <ul
-            key={data.id}
-            onClick={() => handleNavigation(data.url, data.id)}
-            className={`relative pb-1 hover:text-amber-200 ${
-              activeLink === data.id
-                ? "after:content-[''] after:block after:w-full after:h-1 after:bg-amber-200 after:absolute after:left-0 after:bottom-[-4px] after:rounded-t-md after:transition-all after:duration-200 after:ease-in-out"
-                : ""
-            }`}
-          >
-            {data.title}
-          </ul>
-        ))}
-      </div>
-
-      <div className="flex flex-row items-center justify-evenly text-gray-100 dark:text-gray-100">
-        <input
-          type="text"
-          placeholder="Search Here...."
-          onChange={handleSearch}
-          className="w-72 px-2 py-1 rounded-l-md border-2 border-transparent text-gray-100 dark:text-gray-100 bg-sky-950 dark:bg-slate-700 focus:outline-none focus:border-gray-200 dark:focus:border-gray-200 transition-all duration-200 ease-in-out"
-        />
-        <button
-          onClick={submitSearch}
-          disabled={query.length === 0 ? true : false}
-          className="px-2 py-1 cursor-pointer rounded-r-md border-2 border-transparent text-gray-100 dark:text-gray-100 bg-sky-950 hover:bg-sky-800 dark:bg-slate-700 dark:hover:bg-slate-600 transition-all duration-200 ease-in-out transform hover:scale-105 focus:outline-none"
-        >
-          Search
-        </button>
-      </div>
-
-      <div className="flex flex-row items-center justify-evenly space-x-4 text-gray-100 dark:text-gray-100">
-        {!token && (
-          <button
-            onClick={() => navigate("/registration")}
-            className="px-2 py-1 cursor-pointer rounded-md border-2 border-transparent text-gray-100 dark:text-gray-100 bg-sky-950 hover:bg-sky-800 dark:bg-slate-700 dark:hover:bg-slate-600 transition-all duration-200 ease-in-out transform hover:scale-105 focus:outline-none"
-          >
-            Register
-          </button>
-        )}
-        {!token && (
-          <button
-            onClick={() => navigate("/signin")}
-            className="px-2 py-1 cursor-pointer rounded-md border-2 border-transparent text-gray-100 dark:text-gray-100 bg-sky-950 hover:bg-sky-800 dark:bg-slate-700 dark:hover:bg-slate-600 transition-all duration-200 ease-in-out transform hover:scale-105 focus:outline-none"
-          >
-            Login
-          </button>
-        )}
-        {/* <button className="px-2 py-1 cursor-pointer rounded-md border-2 border-transparent text-gray-100 dark:text-gray-100 bg-sky-950 hover:bg-sky-800 dark:bg-slate-700 dark:hover:bg-slate-600 transition-all duration-200 ease-in-out transform hover:scale-105 focus:outline-none">
-          Logout
-        </button> */}
-        {token && (
-          <div className="relative cursor-pointer h-10 w-10 flex flex-row items-center justify-center rounded-full p-1 border-1 border-gray-200 shadow-lg hover:shadow-xl">
+    <motion.nav
+      initial={{ y: -100 }}
+      animate={{ y: 0 }}
+      className="sticky top-0 z-50 glass border-b border-white/20 dark:border-gray-700/20"
+    >
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-16">
+          <Link to="/" className="flex items-center space-x-2">
             <img
-              src={user}
-              alt="avatar"
-              className="rounded-full object-cover h-8 w-8 shadow-lg"
-              loading="lazy"
-              onClick={() => setShowModal((prev) => !prev)}
+              src={darkMode ? logo_svg : logo_svg}
+              alt="BlogSpace Logo"
+              className="h-8 w-8"
             />
-            {showModal && (
-              <Modal
-                showModal={showModal}
-                setModal={() => setShowModal(false)}
-              />
-            )}
+            <span className="text-xl font-bold gradient-text">BlogSpace</span>
+          </Link>
+
+          <div className="hidden md:flex items-center space-x-6">
+            {navItems.map((item) => (
+              <Link
+                key={item.path}
+                to={item.path}
+                className={`flex items-center space-x-1 px-3 py-2 rounded-lg transition-all duration-200 ${
+                  location.pathname === item.path
+                    ? "bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400"
+                    : "hover:bg-gray-100 dark:hover:bg-gray-800"
+                }`}
+              >
+                <span>{item.label}</span>
+              </Link>
+            ))}
           </div>
+
+          <div className="flex items-center space-x-4">
+            <button
+              onClick={toggleDarkMode}
+              className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+            >
+              {darkMode ? "☀️" : "🌙"}
+            </button>
+
+            {token ? (
+              <div className="relative">
+                <button
+                  onClick={() => setIsProfileOpen(!isProfileOpen)}
+                  className="flex items-center gap-2 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                >
+                  {profileData?.profile?.profilePic ? (
+                    <img
+                      src={profileData.profile.profilePic}
+                      alt="User Avatar"
+                      className="w-8 h-8 rounded-full object-cover"
+                    />
+                  ) : (
+                    <img
+                      src={`https://ui-avatars.com/api/?name=${encodeURIComponent(
+                        userData?.name || "User"
+                      )}&background=random&size=32&rounded=true`}
+                      alt="User Avatar"
+                      className="w-8 h-8 rounded-full object-cover"
+                    />
+                  )}
+
+                  <span className="hidden sm:block text-sm font-medium">
+                    {userData?.name}
+                  </span>
+                </button>
+
+                <ProfileDropdown
+                  user={userData}
+                  isOpen={isProfileOpen}
+                  onLogout={handleLogout}
+                  onClose={() => setIsProfileOpen(false)}
+                />
+              </div>
+            ) : (
+              <div className="flex items-center gap-2">
+                <Link
+                  to="/auth/login"
+                  className="px-4 py-2 text-purple-600 dark:text-purple-400 hover:bg-purple-100 dark:hover:bg-purple-900/30 rounded-lg transition-colors"
+                >
+                  Sign In
+                </Link>
+                <Link
+                  to="/auth/register"
+                  className="px-4 py-2 text-sm font-medium bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg hover:shadow-lg transition-all"
+                >
+                  Sign Up
+                </Link>
+              </div>
+            )}
+
+            <button
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+              className="md:hidden p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800"
+            >
+              <div className="space-y-1">
+                <div
+                  className={`w-6 h-0.5 bg-current transition-all ${
+                    isMenuOpen ? "rotate-45 translate-y-1.5" : ""
+                  }`}
+                ></div>
+                <div
+                  className={`w-6 h-0.5 bg-current transition-all ${
+                    isMenuOpen ? "opacity-0" : ""
+                  }`}
+                ></div>
+                <div
+                  className={`w-6 h-0.5 bg-current transition-all ${
+                    isMenuOpen ? "-rotate-45 -translate-y-1.5" : ""
+                  }`}
+                ></div>
+              </div>
+            </button>
+          </div>
+        </div>
+
+        {isMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="md:hidden py-4 space-y-2"
+          >
+            {navItems.map((item) => (
+              <Link
+                key={item.path}
+                to={item.path}
+                onClick={() => setIsMenuOpen(false)}
+                className={`flex items-center space-x-2 px-3 py-2 rounded-lg transition-all duration-200 ${
+                  location.pathname === item.path
+                    ? "bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400"
+                    : "hover:bg-gray-100 dark:hover:bg-gray-800"
+                }`}
+              >
+                <span>{item.label}</span>
+              </Link>
+            ))}
+
+            {!token && (
+              <>
+                <Link
+                  to="/auth/login"
+                  onClick={() => setIsMenuOpen(false)}
+                  className="block px-3 py-2 text-purple-600 dark:text-purple-400"
+                >
+                  Sign In
+                </Link>
+                <Link
+                  to="/auth/register"
+                  onClick={() => setIsMenuOpen(false)}
+                  className="block px-3 py-2 text-purple-600 dark:text-purple-400"
+                >
+                  Sign Up
+                </Link>
+              </>
+            )}
+          </motion.div>
         )}
       </div>
-    </div>
+    </motion.nav>
   );
 }
 
