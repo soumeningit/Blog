@@ -336,8 +336,8 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 **Your Name**
 
-- GitHub: [@yourusername](https://github.com/yourusername)
-- Email: your.email@example.com
+- GitHub: [@soumeningit](https://github.com/soumeningit)
+- Email: soumenpalcs@gmail.com
 
 ---
 
@@ -346,14 +346,4 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 For support, email support@blog.com or open an issue on GitHub.
 
 ---
-
-## 🙏 Acknowledgments
-
-- TipTap for the amazing editor
-- Vercel for hosting
-- MongoDB for the database
-- The open-source community
-
----
-
 **Happy Blogging! 🚀**
