@@ -9,6 +9,5 @@ async function openrouterInIt() {
 }
 
 module.exports = {
-    geminiInIt,
     openrouterInIt
 };
