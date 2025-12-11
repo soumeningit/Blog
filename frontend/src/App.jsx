@@ -5,7 +5,7 @@ import ScrollToTop from "./components/ScrollToTop";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
 import AdminLayout from "./components/admin/AdminLayout";
 
-// Main Pages
+// Main Pages=
 import Home from "./pages/Home";
 import PostDetails from "./pages/PostDetails";
 import Categories from "./pages/Categories";
