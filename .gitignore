@@ -72,3 +72,4 @@ frontend/public/uploads/
 # Misc
 SavedPostTest.jsx
 test.jsx
+*.bak
