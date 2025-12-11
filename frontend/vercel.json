@@ -5,12 +5,7 @@
   "env": {
     "VITE_API_URL": "@vite_api_url"
   },
-  "rewrites": [
-    {
-      "source": "/:path*",
-      "destination": "/index.html"
-    }
-  ],
+  "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }],
   "headers": [
     {
       "source": "/assets/:path*",
